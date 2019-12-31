@@ -8,15 +8,17 @@ Pan-tilt surveillance camera project for raspberry pi 4 with object detection.
 - rasberry pi 4B (I didn't check backward compatibility, but the only thing I would be concerned about is hardware PWM, which servos desperately need)
 - ~70 degree view angle raspi camera module (TODO wide angle cameras support)
 
-## Functionality
+## Features
 What it can do:
 ### Livestreaming
 Check out your camera view at ${your-raspi-ip}:8080, once your raspi is connected via WiFi or some other network.
 
 If there is a screen connected to your raspi and you use desktop OS version, you can specify `-R true` flag to see your windowed camera view.
 
-### Object detection
+### Object detection & following
 Detect any object you provide `haarcascade_*.xml` file for.
+
+Camera follows detected objects.
 
 ### DB logging
 Track your detection logs in mysqldb.
