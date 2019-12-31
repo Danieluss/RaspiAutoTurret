@@ -1,4 +1,4 @@
-# RaspiAutoTurret
+# Raspi AutoTurret camera
 
 Pan-tilt surveillance camera project for raspberry pi 4 with object detection.
 
