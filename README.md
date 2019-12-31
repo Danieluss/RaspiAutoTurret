@@ -6,7 +6,7 @@ Pan-tilt surveillance camera project for raspberry pi 4 with object detection.
 - 2x servo for pan and tilt of your camera
 - pan-tilt servo mount
 - rasberry pi 4B (I didn't check backward compatibility, but the only thing I would be concerned about is hardware PWM, which servos desperately need)
-- some raspi camera module
+- ~70 degree view angle raspi camera module (TODO wide angle cameras support)
 
 ## Functionality
 What it can do:
