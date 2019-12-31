@@ -2,7 +2,7 @@ import pigpio
 import time
 import numpy as np
 from threading import Thread, Lock
-
+import led
 
 class Servo:
     def __init__(self, pin, mx, mn, direction, deg, speed=510, precision=2):
@@ -128,13 +128,17 @@ class Turret:
         with self.target_lock:
             x, y = self.target
             self.target = None
+        led.rgb.set_r(0.75)
         time.sleep(self.go_deg(x, y))
+        led.rgb.set_r(0)
         
     def _run(self):
         try:
             while self.running:
                 for x, y in self.scan_steps(20, 3):
+                    led.rgb.set_g(0.75)
                     time.sleep(self.go_deg(x, y))
+                    led.rgb.set_g(0)
                     while self.target is not None:
                         self.set_speed(50)
                         self.follow_target()

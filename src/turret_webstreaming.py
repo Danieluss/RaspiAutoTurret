@@ -1,6 +1,7 @@
 from flask import Response
 from flask import Flask
 from flask import render_template
+from gevent.pywsgi import WSGIServer
 import threading
 import logging
 import imutils
@@ -37,8 +38,9 @@ def video_feed():
         mimetype = "multipart/x-mixed-replace; boundary=frame")
 
 def _run(ip, port):
-    app.run(host=ip, port=port, debug=True,
-        threaded=True, use_reloader=False)
+    http_server = WSGIServer((ip, port), app)
+    logging.info('web server started at {} {}'.format(ip, port))
+    http_server.serve_forever()
 
 def set_frame(frame):
     global output_frame

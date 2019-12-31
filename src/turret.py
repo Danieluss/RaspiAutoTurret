@@ -9,6 +9,7 @@ from turret_renderer import *
 import turret_webstreaming
 import argparse
 import logging
+import led
 
 
 parser = argparse.ArgumentParser()
@@ -68,19 +69,24 @@ def cam_y_to_deg(y):
     
 if __name__ == "__main__":
     repos = []
+    logging.info('initializing')
     if args.database:
         repos = [Repository(args.db_host, args.db_user, args.db_password, args.db_cooldown)]
     renderer = Renderer()
     turret = Turret()
     stream = get_stream().start()
     turret_webstreaming.run('0.0.0.0', args.sr_port)
-    sleep(1.0)
+    logging.info('cam lense warmup')
+    sleep(2.0)
+    logging.info('init finished')
     turret.run()
+    logging.info('loading classifiers')
     classifiers = [cv2.CascadeClassifier(x) for x in CLASSIFIERS]
     try:
         f = True
         last_target = None
         counter = FPS().start()
+        logging.info('detecting objects...')
         while f:
             frame = stream.read()
             faces = []
@@ -92,10 +98,6 @@ if __name__ == "__main__":
                 if renderer:
                     renderer.draw_face(frame, face)
 
-
-            if len(faces) > 0:
-                x, y, w, h = faces[0]
-            
             def to_turret_space(face):
                 x, y, w, h = face
                 return (pos[0] - cam_x_to_deg(x + w/2),
@@ -104,6 +106,7 @@ if __name__ == "__main__":
             faces = [np.array(x) for x in map(to_turret_space, faces)]
             
             if len(faces) > 0:
+                led.rgb.set_b(0.75)
                 if last_target is None:
                     last_target = faces[0]
                 else:
@@ -111,6 +114,8 @@ if __name__ == "__main__":
                 turret.set_target(last_target)
                 for repo in repos:
                     repo.insert_detection(pos[0], pos[1], last_target[0], last_target[1])
+            else:
+                led.rgb.set_b(0)
             
             if args.render:
                 renderer.render(frame)
